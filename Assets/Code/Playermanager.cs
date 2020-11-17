@@ -11,7 +11,7 @@ public class Playermanager : MonoBehaviour
 	void Update()
 	{
 		float x = Input.GetAxisRaw("Horizontal");
-		transform.position += new Vector3(0.1f * x, 0, 0);
+		transform.position += new Vector3(10 * x, 0, 0);
 
 		if (Input.GetKeyDown(KeyCode.Space))
 		{
