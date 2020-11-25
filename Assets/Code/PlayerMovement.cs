@@ -13,26 +13,30 @@ namespace Assets.code
         moveSpeed：移動速度の設定…速すぎると判定抜けの可能性あり
          */
         private const float V = 5f;
-        public float moveSpeed = 5.5f;
+        public float moveSpeed = 70f;
 
         void Start()
         {
+           /*
             PlayerMovement playerMovement = this;
             playerMovement.gameObject.transform.position = new Vector2(-10, 150);
+            */
+
         }
         // playerの位置を特定
-        private Vector2 pos;
+        private Vector2 positon;
 
         void Update()
         {
-            /*
-            // Inputの前に「-」を付ける。
-            float moveH = -Input.GetAxis("Horizontal") * moveSpeed;
-            float moveV = -Input.GetAxis("Vertical") * moveSpeed;
+            float x = Input.GetAxis("Horizontal") * moveSpeed;
+            float y = Input.GetAxis("Vertical") * moveSpeed;
             //初期位置(0,0)からずれる方向、距離(⇓,⇑,前後)
-            transform.localPosition(moveH, -moveV);
+            // transform.localPosition(moveH, -moveV);
 
-            */
+            // 移動する向きを求める
+            // x と y の入力値を正規化して direction に渡す
+            Vector2 direction = new Vector2(x, y).normalized;
+
             //上で入力した上限、下限値を設定 ⇒⇒⇒ 可動範囲域を設定できる
             Clamp();
 
@@ -43,11 +47,11 @@ namespace Assets.code
 
             if (Input.GetKey(KeyCode.LeftArrow))
             {
-                this.gameObject.transform.position = new Vector2(pos.x - V, pos.y);
+                this.gameObject.transform.position = new Vector2(positon.x - V, positon.y);
             }
             else if (Input.GetKey(KeyCode.RightArrow))
             {
-                this.gameObject.transform.position = new Vector2(pos.x + V, pos.y);
+                this.gameObject.transform.position = new Vector2(positon.x + V, positon.y);
             }
             else
             {
@@ -57,19 +61,18 @@ namespace Assets.code
         // プレーヤーの移動できる範囲を制限する命令ブロック
         void Clamp()
         {
-            // プレーヤーの位置情報を「pos」という箱の中に入れる。
-            pos = transform.position;
-            /*
-            ≪注意≫現在の視点上での動き（変域の設定）
-              x値　+：右側の可動域,-：左側の可動域
-              y値　+：上部への可動域,-：下部への可動域
-            　z値　+：,　　　　　　　　-：
-            */
-            pos.x = Mathf.Clamp(pos.x, 200, 500);
-            pos.y = Mathf.Clamp(pos.y, 50, 50);
+            // 自機の移動座標最小値をビューポートから取得（最小値は0,0）
+            Vector2 min = Camera.main.ViewportToWorldPoint(new Vector2(.0f, .0f));
+            // 自機の移動座標最大値ををビューポートから取得（最大値は1,1）
+            Vector2 max = Camera.main.ViewportToWorldPoint(new Vector2(.9f, .9f));
+            // 自機の座標を取得してベクトル pos に格納
+            Vector2 pos = transform.position;
+            // pos.x の値を最小値 min 最大値 max の範囲に制限する
+            pos.x = Mathf.Clamp(pos.x, min.x, max.x);
+            // pos.y の値を最小値 min 最大値 max の範囲に制限する
+            pos.y = Mathf.Clamp(pos.y, min.y, max.y);
+            // 自機の移動範囲を pos の最小値と最大値の範囲に制限する
             transform.position = pos;
-
-
         }
     }
 }

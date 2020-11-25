@@ -8,7 +8,7 @@ public class Transhome : MonoBehaviour
     public void OnClick()
     {
         // メインシーンへ移動
-        SceneManager.LoadScene("stage");
+        SceneManager.LoadScene("StageSelect");
     }
     void Start()
     {
